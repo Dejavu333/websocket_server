@@ -1,13 +1,25 @@
-# websockets package
-__Each struct that implements the IWebSocketServer interface must define 4 methods:__
-- Start()
-- Stop()
-- AddChannel(p_channelName string)
-- Broadcast(p_channelName string, p_data interface{})
-
-__The websockets package contains a default implementation of the IWebSocketServer interface, the DefaultWebSocketServer struct. I provide guidelines on how to use it below.__
-
-## backend setup for websockets package
+# Explanation of the code
+This Go code defines a WebSocket server that can handle multiple channels, broadcast data to all clients in a given channel, and be started and stopped. It uses the gorilla/websocket package to manage WebSocket connections.
+## IWebSocketServer interface
+This interface defines the methods that any implementation of the WebSocket server must implement. It includes methods for starting and stopping the server, broadcasting data to clients in a channel, and adding a channel to the server.
+## DefaultWebSocketServer struct
+This struct is the default implementation of the IWebSocketServer interface. It has the following fields:
+- upgrader: a websocket.Upgrader instance that is used to upgrade HTTP connections to WebSocket connections.
+- clients: a map of WebSocket connections to a boolean value indicating whether they are still active.
+- channels: a map of channel names to maps of WebSocket connections to a boolean value indicating whether they are subscribed to the channel.
+The struct also includes the following methods:
+- Start(): starts the WebSocket server by creating an HTTP server and listening on the specified host and port. It also sets up a route for handling HTTP requests and upgrading them to WebSocket connections.
+- Stop(): stops the WebSocket server by closing all WebSocket connections and deleting them from the clients and channels maps.
+- handleHTTPRequest(): handles incoming HTTP requests and upgrades them to WebSocket connections if the requested URL matches an existing channel. If the URL does not match an existing channel, it returns a 404 Not Found error.
+- upgradeWebSocket(): upgrades an HTTP connection to a WebSocket connection and adds the connection to the clients and channels maps.
+- Broadcast(): sends a message to all WebSocket connections in a given channel.
+- AddChannel(): adds a new channel to the server.
+## Utility functions
+getEnvOrDefault(): retrieves the value of an environment variable or returns a default value if the variable is not set.
+# Conclusion
+This Go code defines a simple WebSocket server that can handle multiple channels and broadcast data to clients in a given channel. It can be easily customized to fit specific use cases and integrated into existing Go applications.
+# Usage
+## Backend setup
 ```go
     // SETUP THE WEBSOCKET SERVER
 	websocketServer := websockets.NewDefaultWebSocketServer()
@@ -34,9 +46,7 @@ __The websockets package contains a default implementation of the IWebSocketServ
     websocketServer.Broadcast("/ws/test1", TestStruct{Name: "Naruto", Age: 30})
     websocketServer.Broadcast("/ws/test2", TestStruct{Name: "Yagami", Age: 25})
 ```
-
-## frontend setup for websockets package
-__The DefaultWebSocketServer broadcasts data in the form of json strings, so you have to decode them.__
+## Frontend setup
 ```js
     // I RECOMMEND USING THIS HELPER FUNCTION TO ESTABLISH A CONNECTION WITH THE WEBSOCKET SERVER
     // IN A CALLBACK FUNCTION YOU CAN DO WHATEVER YOU WANT WITH THE DATA YOU RECEIVE FROM THE WEBSOCKET SERVER
