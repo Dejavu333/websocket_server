@@ -1,8 +1,8 @@
 # Explanation of the code
 This Go code defines a WebSocket server that can handle multiple channels, broadcast data to all clients in a given channel, and be started and stopped. It uses the gorilla/websocket package to manage WebSocket connections.
-## IWebSocketServer interface
+### IWebSocketServer interface
 This interface defines the methods that any implementation of the WebSocket server must implement. It includes methods for starting and stopping the server, broadcasting data to clients in a channel, and adding a channel to the server.
-## DefaultWebSocketServer struct
+### DefaultWebSocketServer struct
 This struct is the default implementation of the IWebSocketServer interface. It has the following fields:
 - upgrader: a websocket.Upgrader instance that is used to upgrade HTTP connections to WebSocket connections.
 - clients: a map of WebSocket connections to a boolean value indicating whether they are still active.
@@ -14,12 +14,10 @@ The struct also includes the following methods:
 - upgradeWebSocket(): upgrades an HTTP connection to a WebSocket connection and adds the connection to the clients and channels maps.
 - Broadcast(): sends a message to all WebSocket connections in a given channel.
 - AddChannel(): adds a new channel to the server.
-## Utility functions
+### Utility functions
 getEnvOrDefault(): retrieves the value of an environment variable or returns a default value if the variable is not set.
-# Conclusion
-This Go code defines a simple WebSocket server that can handle multiple channels and broadcast data to clients in a given channel. It can be easily customized to fit specific use cases and integrated into existing Go applications.
 # Usage
-## Backend setup
+### Backend setup
 ```go
     // SETUP THE WEBSOCKET SERVER
 	websocketServer := websockets.NewDefaultWebSocketServer()
@@ -46,7 +44,7 @@ This Go code defines a simple WebSocket server that can handle multiple channels
     websocketServer.Broadcast("/ws/test1", TestStruct{Name: "Naruto", Age: 30})
     websocketServer.Broadcast("/ws/test2", TestStruct{Name: "Yagami", Age: 25})
 ```
-## Frontend setup
+### Frontend setup
 ```js
     // I RECOMMEND USING THIS HELPER FUNCTION TO ESTABLISH A CONNECTION WITH THE WEBSOCKET SERVER
     // IN A CALLBACK FUNCTION YOU CAN DO WHATEVER YOU WANT WITH THE DATA YOU RECEIVE FROM THE WEBSOCKET SERVER
